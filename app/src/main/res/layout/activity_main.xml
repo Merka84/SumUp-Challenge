@@ -44,10 +44,6 @@
             <include layout="@layout/base_toolbar"/>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <View
-            android:id="@+id/dummyView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 
             <com.example.avjindersinghsekhon.minimaltodo.RecyclerViewEmptySupport
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -62,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:layout_anchor="@id/dummyView"
+            app:layout_anchor="@id/toDoRecyclerView"
             app:layout_anchorGravity="bottom|end"
             app:layout_behavior="com.example.avjindersinghsekhon.minimaltodo.ScrollingFABBehaviour"
             />
