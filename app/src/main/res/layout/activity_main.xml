@@ -21,6 +21,7 @@
             android:layout_height="match_parent">
 
             <ImageView
+                android:id="@+id/emptyViewImg"
                 android:src="@drawable/empty_view_bg"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
@@ -39,18 +40,14 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:elevation="0dp"
-            android:elevation="0dp"
-            >
-
+            app:elevation="0dp">
             <include layout="@layout/base_toolbar"/>
         </com.google.android.material.appbar.AppBarLayout>
 
-            <!--<include layout="@layout/base_toolbar"/>-->
-
-
-        <!--</android.support.design.widget.AppBarLayout>-->
-
+        <View
+            android:id="@+id/dummyView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
             <com.example.avjindersinghsekhon.minimaltodo.RecyclerViewEmptySupport
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -65,8 +62,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:layout_anchor="@id/myCoordinatorLayout"
-            app:layout_anchorGravity="bottom|right|end"
+            app:layout_anchor="@id/dummyView"
+            app:layout_anchorGravity="bottom|end"
             app:layout_behavior="com.example.avjindersinghsekhon.minimaltodo.ScrollingFABBehaviour"
             />
 
