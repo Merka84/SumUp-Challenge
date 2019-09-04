@@ -4,15 +4,16 @@ buildscript {
     ext {
         gradlePluginVersion = '3.4.2'
         googleServicePluginVersion = '4.3.1'
+        ext.kotlin_version = '1.3.41'
     }
     repositories {
         jcenter()
         google()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$gradlePluginVersion"
+        classpath "com.android.tools.build:gradle:${gradlePluginVersion}"
         classpath "com.google.gms:google-services:$googleServicePluginVersion"
-
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -25,6 +26,7 @@ ext {
 
     buildToolsVersion = '28.0.3'
 
+    sumUpVersion = '3.2.0'
     analyticsVersion = '17.0.0'
     calligraphyVersion = '2.1.0'
     spinnerVersion = '1.1.0'
@@ -41,6 +43,8 @@ allprojects {
     repositories {
         jcenter()
         google()
+
+        maven { url 'https://maven.sumup.com/releases' }
     }
 }
 
