@@ -23,17 +23,23 @@
 
 package com.example.avjindersinghsekhon.minimaltodo;
 
-import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * JUnit tests to verify functionality of ToDoItem class.
  */
-public class TestTodoItem extends TestCase {
+@RunWith(JUnit4.class)
+public class TestTodoItem  {
     private final Date CURRENT_DATE = new Date();
     private final String TEXT_BODY = "This is some text";
     private final boolean REMINDER_OFF = false;
@@ -42,6 +48,7 @@ public class TestTodoItem extends TestCase {
      /**
       * Check we can construct a ToDoItem object using the three parameter constructor
       */
+     @Test
     public void testThreeParameterConstructor() {
         ToDoItem toDoItem = getToDoItem(REMINDER_OFF);
         assertEquals(TEXT_BODY, toDoItem.getToDoText());
@@ -52,6 +59,7 @@ public class TestTodoItem extends TestCase {
      /**
       * Ensure we can marshall ToDoItem objects to Json
       */
+     @Test
     public void testObjectMarshallingToJson() {
         ToDoItem toDoItem = getToDoItem(REMINDER_ON);
 
@@ -68,6 +76,7 @@ public class TestTodoItem extends TestCase {
     /**
     * Ensure we can create ToDoItem objects from Json data by using the json constructor
     */
+    @Test
     public void testObjectUnmarshallingFromJson() {
         ToDoItem originalItem = getToDoItem(REMINDER_OFF);
 
@@ -84,6 +93,7 @@ public class TestTodoItem extends TestCase {
             fail("Exception thrown during test execution: " + e.getMessage());
         }
     }
+
 
     private ToDoItem getToDoItem(boolean hasReminder) {
         return new ToDoItem(TEXT_BODY, hasReminder, CURRENT_DATE);

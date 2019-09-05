@@ -24,39 +24,42 @@
 package com.example.avjindersinghsekhon.minimaltodo;
 
 import android.content.Context;
-import android.test.ActivityUnitTestCase;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Test cases for StoreRetrieveData class
  */
-public class TestStoreRetrieveData extends ActivityUnitTestCase<MainActivity> {
+@RunWith(JUnit4.class)
+public class TestStoreRetrieveData {
 
-    private MainActivity mMainActivity;
     private ArrayList<ToDoItem> mOriginalData;
     ArrayList<ToDoItem> mTestData;
 
-    public TestStoreRetrieveData() {
-        super(MainActivity.class);
-
-        // Create some test data
-        mTestData = new ArrayList<>();
-        for (int i = 1; i < 11; i++) {
-            mTestData.add(new ToDoItem(
-                    "item" + i,
-                    false,
-                    new Date()));
-        }
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        mMainActivity = getActivity();
+   @Before
+    public void setUp()  {
+       // Create some test data
+       mTestData = new ArrayList<>();
+       for (int i = 1; i < 11; i++) {
+           mTestData.add(new ToDoItem(
+                   "item" + i,
+                   false,
+                   new Date()));
+       }
         mOriginalData = new ArrayList<>();
 
         // Save the original data and wipe out the storage
@@ -77,10 +80,8 @@ public class TestStoreRetrieveData extends ActivityUnitTestCase<MainActivity> {
         }
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-
+    @After
+    public void tearDown() throws IOException, JSONException {
         // Let's restore the data we might have wiped out during setUp()...
         StoreRetrieveData dataStorage = getDataStorage();
         dataStorage.saveToFile(mOriginalData);
@@ -89,6 +90,7 @@ public class TestStoreRetrieveData extends ActivityUnitTestCase<MainActivity> {
     /**
      * We should have an empty data storage at hand for the starters
      */
+    @Test
     public void testPreconditions() {
         StoreRetrieveData dataStorage = getDataStorage();
 
@@ -105,6 +107,7 @@ public class TestStoreRetrieveData extends ActivityUnitTestCase<MainActivity> {
     /**
      * Write items to data storage and ensure those same items can be retrieved from the storage.
      */
+    @Test
     public void testWritingToAndReadingFromTheDataStorage() {
         StoreRetrieveData dataStorage = getDataStorage();
         ArrayList<ToDoItem> retrievedItems = new ArrayList<>();
@@ -153,6 +156,7 @@ public class TestStoreRetrieveData extends ActivityUnitTestCase<MainActivity> {
     /**
      * Ensure JSONArray conversion works as intended
      */
+    @Test
     public void testArrayListToJsonArrayConversion() {
         try {
             JSONArray array = StoreRetrieveData.toJSONArray(mTestData);
@@ -161,6 +165,7 @@ public class TestStoreRetrieveData extends ActivityUnitTestCase<MainActivity> {
             fail("Exception thrown when converting to JSONArray: " + e.getMessage());
         }
     }
+
 
     private StoreRetrieveData getDataStorage() {
         Context context = getInstrumentation().getTargetContext();
