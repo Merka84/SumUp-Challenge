@@ -1,19 +1,20 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+
     ext {
         gradlePluginVersion = '3.4.2'
         googleServicePluginVersion = '4.3.1'
-        ext.kotlin_version = '1.3.41'
+        kotlinVersion = '1.3.41'
     }
     repositories {
         jcenter()
         google()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:${gradlePluginVersion}"
+        classpath "com.android.tools.build:gradle:$gradlePluginVersion"
         classpath "com.google.gms:google-services:$googleServicePluginVersion"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -27,6 +28,8 @@ ext {
     buildToolsVersion = '28.0.3'
 
     sumUpVersion = '3.2.0'
+    volleyVersion = '1.1.1'
+    ktxCoreVersion = '1.0.2'
     analyticsVersion = '17.0.0'
     calligraphyVersion = '2.1.0'
     spinnerVersion = '1.1.0'
@@ -36,6 +39,8 @@ ext {
     materialVersion = '1.0.0'
     appcompatVersion = '1.0.2'
     legacySupportVersion = '1.0.0'
+    junitVersion = '4.12'
+    testRunnerVersion = '1.1.1'
 
 }
 
