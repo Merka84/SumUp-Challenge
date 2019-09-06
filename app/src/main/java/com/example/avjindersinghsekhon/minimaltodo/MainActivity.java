@@ -32,6 +32,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.avjindersinghsekhon.minimaltodo.network.ITokenCallBack;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.sumup.merchant.Models.TransactionInfo;
 import com.sumup.merchant.api.SumUpAPI;
 import com.sumup.merchant.api.SumUpLogin;
 import com.sumup.merchant.api.SumUpPayment;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             "Get my dry cleaning"
     };
 
-    public static final String TAG = "Minimal-TODO";
+    public static final String TAG = "SumUp-test";
     private String receiptId;
 
 
@@ -328,13 +329,21 @@ public class MainActivity extends AppCompatActivity {
 
         else  if (requestCode == REQUEST_CODE_SUMMUP_LOGIN && data != null) {
             int resCode = data.getExtras().getInt(SumUpAPI.Response.RESULT_CODE);
+            String msg = data.getExtras().getString(SumUpAPI.Response.MESSAGE);
             //SumUpAPI.Response.ResultCode.
-            Log.d("sumup-login", resCode+"");
+            Log.d(TAG, "result code:" + resCode);
+            Log.d(TAG, "result msg:" + msg);
             sumUpMakePayment();
         }
         else  if (requestCode == REQUEST_CODE_SUMMUP_PAYMENT && data != null) {
             int resCode = data.getExtras().getInt(SumUpAPI.Response.RESULT_CODE);
-            Log.d("sumup-payment", resCode + "");
+            String transactionId = data.getExtras().getString(SumUpAPI.Param.FOREIGN_TRANSACTION_ID);
+            Log.d(TAG, "result code:"+resCode);
+            Log.d(TAG, "transactionId:"+transactionId);
+            Log.d(TAG, "msg:"+ data.getExtras().getString(SumUpAPI.Response.MESSAGE));
+            TransactionInfo transactionInfo = data.getExtras().getParcelable(SumUpAPI.Response.TX_INFO);
+            boolean isReceiptSent = data.getExtras().getBoolean(SumUpAPI.Response.RECEIPT_SENT);
+            Log.d(TAG, "isReceiptSent:"+isReceiptSent);
         }
 
     }
@@ -604,7 +613,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void loginToSumup(@NotNull String token) {
+    private void loginToSumup(String token) {
         String mAffiliateKey = "0fe74f65-093a-41c0-9e6b-281e8a9f8514";
         SumUpLogin.Builder builder = SumUpLogin.builder(mAffiliateKey);
         if(token != null) {

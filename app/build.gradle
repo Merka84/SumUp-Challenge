@@ -30,9 +30,15 @@ android {
         }
     }
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
+
     lintOptions {
         abortOnError false
     }
+
+    dataBinding {
+        enabled = true
+    }
+
 }
 
 dependencies {

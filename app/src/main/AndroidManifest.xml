@@ -23,9 +23,18 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
 
+                <data
+                    android:host="sumup"
+                    android:path="/token"
+                    android:scheme="merka" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -47,8 +56,7 @@
 
         <activity
             android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity"
-            />
+            android:parentActivityName=".MainActivity" />
 
     </application>
 
