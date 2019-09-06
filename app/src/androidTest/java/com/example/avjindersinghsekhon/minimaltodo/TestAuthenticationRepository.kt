@@ -18,11 +18,10 @@ class TestAuthenticationRepository {
     private val callback = object : ITokenCallBack {
         override fun onSuccess(data: String) {
             assert(data.length >= 32)
-
         }
 
         override fun onError(error: String) {
-            assert(error.isEmpty())
+            assert(error.isNotEmpty())
         }
     }
 

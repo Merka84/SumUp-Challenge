@@ -7,14 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,15 +19,32 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.example.avjindersinghsekhon.minimaltodo.network.ITokenCallBack;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.sumup.merchant.api.SumUpAPI;
+import com.sumup.merchant.api.SumUpLogin;
+import com.sumup.merchant.api.SumUpPayment;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerViewEmptySupport mRecyclerView;
@@ -45,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String TODOITEM = "com.example.avjindersinghsekhon.minimaltodo.MainActivity";
     private BasicListAdapter adapter;
     private static final int REQUEST_ID_TODO_ITEM = 100;
+    private static final int REQUEST_CODE_SUMMUP_PAYMENT = 2;
+    private static final int REQUEST_CODE_SUMMUP_LOGIN = 1;
     private ToDoItem mJustDeletedToDoItem;
     private int mIndexOfDeletedToDoItem;
     public static final String DATE_TIME_FORMAT_12_HOUR = "MMM d, yyyy  h:mm a";
@@ -69,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
             "Get my dry cleaning"
     };
 
+    public static final String TAG = "Minimal-TODO";
+    private String receiptId;
 
 
     public static ArrayList<ToDoItem> getLocallyStoredData(StoreRetrieveData storeRetrieveData){
@@ -118,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
             recreate();
         }
 
-
     }
 
     @Override
@@ -135,10 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(CHANGE_OCCURED, false);
-//            editor.commit();
             editor.apply();
-
-
         }
     }
 
@@ -160,122 +169,74 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onCreate(Bundle savedInstanceState) {
-        app = (AnalyticsApplication)getApplication();
-//        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-//                .setDefaultFontPath("fonts/Aller_Regular.tff").setFontAttrId(R.attr.fontPath).build());
-
-        //We recover the theme we've set and setTheme accordingly
-        theme = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE).getString(THEME_SAVED, LIGHTTHEME);
-
-        if(theme.equals(LIGHTTHEME)){
-            mTheme = R.style.CustomStyle_LightTheme;
-        }
-        else{
-            mTheme = R.style.CustomStyle_DarkTheme;
-        }
-        this.setTheme(mTheme);
-
+        setupTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        initSharedPrefStorage();
+        setupViews();
+        addListeners();
+        setupData();
+        setAlarms();
+        checkLogin();
 
+    }
 
-
+    private void initSharedPrefStorage() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(CHANGE_OCCURED, false);
         editor.apply();
+    }
 
+    private void setupViews() {
+        mCoordLayout = findViewById(R.id.myCoordinatorLayout);
+        mAddToDoItemFAB = findViewById(R.id.addToDoItemFAB);
+
+        mRecyclerView = findViewById(R.id.toDoRecyclerView);
+        if(theme.equals(LIGHTTHEME)){
+            mRecyclerView.setBackgroundColor(getResources().getColor(R.color.primary_lightest));
+        }
+        mRecyclerView.setEmptyView(findViewById(R.id.toDoEmptyView));
+        mRecyclerView.setHasFixedSize(true);
+
+        ItemTouchHelper.Callback callback = new ItemTouchHelperClass(adapter);
+        itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+    }
+
+    private void setupData() {
         storeRetrieveData = new StoreRetrieveData(this, FILENAME);
         mToDoItemsArrayList =  getLocallyStoredData(storeRetrieveData);
         adapter = new BasicListAdapter(mToDoItemsArrayList);
-        setAlarms();
 
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.addOnScrollListener(customRecyclerScrollViewListener);
+        mRecyclerView.setAdapter(adapter);
+    }
 
-//        adapter.notifyDataSetChanged();
-//        storeRetrieveData = new StoreRetrieveData(this, FILENAME);
-//
-//        try {
-//            mToDoItemsArrayList = storeRetrieveData.loadFromFile();
-////            Log.d("OskarSchindler", "Arraylist Length: "+mToDoItemsArrayList.size());
-//        } catch (IOException | JSONException e) {
-////            Log.d("OskarSchindler", "IOException received");
-//            e.printStackTrace();
-//        }
-//
-//        if(mToDoItemsArrayList==null){
-//            mToDoItemsArrayList = new ArrayList<>();
-//        }
-//
-
-//        mToDoItemsArrayList = new ArrayList<>();
-//        makeUpItems(mToDoItemsArrayList, testStrings.length);
-
-        final androidx.appcompat.widget.Toolbar toolbar = (androidx.appcompat.widget.Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-
-
-        mCoordLayout = (CoordinatorLayout)findViewById(R.id.myCoordinatorLayout);
-        mAddToDoItemFAB = (FloatingActionButton)findViewById(R.id.addToDoItemFAB);
-
+    private void addListeners(){
         mAddToDoItemFAB.setOnClickListener(new View.OnClickListener() {
 
-            @SuppressWarnings("deprecation")
             @Override
             public void onClick(View v) {
+
                 app.send(this, "Action", "FAB pressed");
                 Intent newTodo = new Intent(MainActivity.this, AddToDoActivity.class);
                 ToDoItem item = new ToDoItem("", false, null);
                 int color = ColorGenerator.MATERIAL.getRandomColor();
                 item.setTodoColor(color);
                 //noinspection ResourceType
-//                String color = getResources().getString(R.color.primary_ligher);
                 newTodo.putExtra(TODOITEM, item);
-//                View decorView = getWindow().getDecorView();
-//                View navView= decorView.findViewById(android.R.id.navigationBarBackground);
-//                View statusView = decorView.findViewById(android.R.id.statusBarBackground);
-//                Pair<View, String> navBar ;
-//                if(navView!=null){
-//                    navBar = Pair.create(navView, navView.getTransitionName());
-//                }
-//                else{
-//                    navBar = null;
-//                }
-//                Pair<View, String> statusBar= Pair.create(statusView, statusView.getTransitionName());
-//                ActivityOptions options;
-//                if(navBar!=null){
-//                    options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, navBar, statusBar);
-//                }
-//                else{
-//                    options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, statusBar);
-//                }
-
-//                startActivity(new Intent(MainActivity.this, TestLayout.class), options.toBundle());
-//                startActivityForResult(newTodo, REQUEST_ID_TODO_ITEM, options.toBundle());
-
                 startActivityForResult(newTodo, REQUEST_ID_TODO_ITEM);
             }
         });
 
-
-//        mRecyclerView = (RecyclerView)findViewById(R.id.toDoRecyclerView);
-        mRecyclerView = (RecyclerViewEmptySupport)findViewById(R.id.toDoRecyclerView);
-        if(theme.equals(LIGHTTHEME)){
-            mRecyclerView.setBackgroundColor(getResources().getColor(R.color.primary_lightest));
-        }
-        mRecyclerView.setEmptyView(findViewById(R.id.toDoEmptyView));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
-
         customRecyclerScrollViewListener = new CustomRecyclerScrollViewListener() {
             @Override
             public void show() {
-
                 mAddToDoItemFAB.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-//                mAddToDoItemFAB.animate().translationY(0).setInterpolator(new AccelerateInterpolator(2.0f)).start();
             }
 
             @Override
@@ -286,19 +247,21 @@ public class MainActivity extends AppCompatActivity {
                 mAddToDoItemFAB.animate().translationY(mAddToDoItemFAB.getHeight()+fabMargin).setInterpolator(new AccelerateInterpolator(2.0f)).start();
             }
         };
-        mRecyclerView.addOnScrollListener(customRecyclerScrollViewListener);
+    }
 
+    private void setupTheme() {
+        app = (AnalyticsApplication)getApplication();
 
-        ItemTouchHelper.Callback callback = new ItemTouchHelperClass(adapter);
-        itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+        //We recover the theme we've set and setTheme accordingly
+        theme = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE).getString(THEME_SAVED, LIGHTTHEME);
 
-
-        mRecyclerView.setAdapter(adapter);
-//        setUpTransitions();
-
-
-
+        if(theme != null && theme.equals(LIGHTTHEME)){
+            mTheme = R.style.CustomStyle_LightTheme;
+        }
+        else{
+            mTheme = R.style.CustomStyle_DarkTheme;
+        }
+        this.setTheme(mTheme);
     }
 
     public void addThemeToSharedPreferences(String theme){
@@ -321,22 +284,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(this, AboutActivity.class);
                 startActivity(i);
                 return true;
-//            case R.id.switch_themes:
-//                if(mTheme == R.style.CustomStyle_DarkTheme){
-//                    addThemeToSharedPreferences(LIGHTTHEME);
-//                }
-//                else{
-//                    addThemeToSharedPreferences(DARKTHEME);
-//                }
 //
-////                if(mTheme == R.style.CustomStyle_DarkTheme){
-////                    mTheme = R.style.CustomStyle_LightTheme;
-////                }
-////                else{
-////                    mTheme = R.style.CustomStyle_DarkTheme;
-////                }
-//                this.recreate();
-//                return true;
             case R.id.preferences:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
@@ -361,7 +309,6 @@ public class MainActivity extends AppCompatActivity {
                 i.putExtra(TodoNotificationService.TODOTEXT, item.getToDoText());
                 i.putExtra(TodoNotificationService.TODOUUID, item.getIdentifier());
                 createAlarm(i, item.getIdentifier().hashCode(), item.getToDoDate().getTime());
-//                Log.d("OskarSchindler", "Alarm Created: "+item.getToDoText()+" at "+item.getToDoDate());
             }
 
             for(int i = 0; i<mToDoItemsArrayList.size();i++){
@@ -378,6 +325,18 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+
+        else  if (requestCode == REQUEST_CODE_SUMMUP_LOGIN && data != null) {
+            int resCode = data.getExtras().getInt(SumUpAPI.Response.RESULT_CODE);
+            //SumUpAPI.Response.ResultCode.
+            Log.d("sumup-login", resCode+"");
+            sumUpMakePayment();
+        }
+        else  if (requestCode == REQUEST_CODE_SUMMUP_PAYMENT && data != null) {
+            int resCode = data.getExtras().getInt(SumUpAPI.Response.RESULT_CODE);
+            Log.d("sumup-payment", resCode + "");
+        }
+
     }
 
     private AlarmManager getAlarmManager(){
@@ -407,7 +366,6 @@ public class MainActivity extends AppCompatActivity {
     private void addToDataStore(ToDoItem item){
         mToDoItemsArrayList.add(item);
         adapter.notifyItemInserted(mToDoItemsArrayList.size() - 1);
-
     }
 
 
@@ -509,16 +467,7 @@ public class MainActivity extends AppCompatActivity {
             }
             holder.mToDoTextview.setText(item.getToDoText());
             holder.mToDoTextview.setTextColor(todoTextColor);
-//            holder.mColorTextView.setBackgroundColor(Color.parseColor(item.getTodoColor()));
 
-//            TextDrawable myDrawable = TextDrawable.builder().buildRoundRect(item.getToDoText().substring(0,1),Color.RED, 10);
-            //We check if holder.color is set or not
-//            if(item.getTodoColor() == null){
-//                ColorGenerator generator = ColorGenerator.MATERIAL;
-//                int color = generator.getRandomColor();
-//                item.setTodoColor(color+"");
-//            }
-//            Log.d("OskarSchindler", "Color: "+item.getTodoColor());
             TextDrawable myDrawable = TextDrawable.builder().beginConfig()
                     .textColor(Color.WHITE)
                     .useFont(Typeface.DEFAULT)
@@ -526,7 +475,6 @@ public class MainActivity extends AppCompatActivity {
                     .endConfig()
                     .buildRound(item.getToDoText().substring(0,1),item.getTodoColor());
 
-//            TextDrawable myDrawable = TextDrawable.builder().buildRound(item.getToDoText().substring(0,1),holder.color);
             holder.mColorImageView.setImageDrawable(myDrawable);
             if(item.getToDoDate()!=null){
                 String timeToShow;
@@ -576,22 +524,16 @@ public class MainActivity extends AppCompatActivity {
                         startActivityForResult(i, REQUEST_ID_TODO_ITEM);
                     }
                 });
-                mToDoTextview = (TextView)v.findViewById(R.id.toDoListItemTextview);
-                mTimeTextView = (TextView)v.findViewById(R.id.todoListItemTimeTextView);
-//                mColorTextView = (TextView)v.findViewById(R.id.toDoColorTextView);
-                mColorImageView = (ImageView)v.findViewById(R.id.toDoListItemColorImageView);
-                linearLayout = (LinearLayout)v.findViewById(R.id.listItemLinearLayout);
+                mToDoTextview = v.findViewById(R.id.toDoListItemTextview);
+                mTimeTextView = v.findViewById(R.id.todoListItemTimeTextView);
+                mColorImageView = v.findViewById(R.id.toDoListItemColorImageView);
+                linearLayout = v.findViewById(R.id.listItemLinearLayout);
             }
 
 
         }
     }
 
-    //Used when using custom fonts
-//    @Override
-//    protected void attachBaseContext(Context newBase) {
-//        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-//    }
 
     private void saveDate(){
         try {
@@ -615,28 +557,62 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
         mRecyclerView.removeOnScrollListener(customRecyclerScrollViewListener);
+        SumUpAPI.logout();
     }
 
+    private void sumUpMakePayment(){
+        receiptId = UUID.randomUUID().toString();
+        SumUpPayment payment = SumUpPayment.builder()
+                .total(new BigDecimal("1.12"))
+                .currency(SumUpPayment.Currency.EUR)
+                .tip(new BigDecimal("0.10"))
+                .title("Taxi Ride")
+                .receiptEmail("akram.shokri@mail.com")
+                .receiptSMS("+989051726050")
+                .foreignTransactionId(receiptId)  // can not exceed 128 chars
+                .skipSuccessScreen()
+                .build();
 
-//    public void setUpTransitions(){
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-//            Transition enterT = new Slide(Gravity.RIGHT);
-//            enterT.setDuration(500);
-//
-//            Transition exitT = new Slide(Gravity.LEFT);
-//            exitT.setDuration(300);
-//
-//            Fade fade = new Fade();
-//            fade.setDuration(500);
-//
-//            getWindow().setExitTransition(fade);
-//            getWindow().setReenterTransition(fade);
-//
-//        }
-//    }
+        if(SumUpAPI.isLoggedIn()) {
+            SumUpAPI.checkout(MainActivity.this, payment, REQUEST_CODE_SUMMUP_PAYMENT);
+        } else {
+            Log.e(TAG, "not logged in ! ");
+        }
+    }
+
+    private void checkLogin() {
+        if(!SumUpAPI.isLoggedIn()) {
+            loginToSumup(null);
+//            AuthenticationRepository repository = new AuthenticationRepository(this, callBack);
+//            repository.requestToken();
+//            repository.authenticate();
+
+        }
+    }
+
+    private ITokenCallBack callBack = new ITokenCallBack() {
+        @Override
+        public void onSuccess(@NotNull String token) {
+            loginToSumup(token);
+        }
+
+        @Override
+        public void onError(@NotNull String error) {
+            Log.d(TAG , error);
+        }
+    };
+
+    private void loginToSumup(@NotNull String token) {
+        String mAffiliateKey = "0fe74f65-093a-41c0-9e6b-281e8a9f8514";
+        SumUpLogin.Builder builder = SumUpLogin.builder(mAffiliateKey);
+        if(token != null) {
+            builder.accessToken(token);
+        }
+        SumUpAPI.openLoginActivity(MainActivity.this, builder.build(), REQUEST_CODE_SUMMUP_LOGIN);
+    }
+
 
 }
 
