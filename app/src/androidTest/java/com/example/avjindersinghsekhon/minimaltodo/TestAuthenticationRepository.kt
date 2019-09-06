@@ -32,4 +32,9 @@ class TestAuthenticationRepository {
     fun testAuthentication(){
         repository.requestToken()
     }
+
+    @Test
+    fun testReceipt(){
+        repository.getReceipt("TC263PYMYA")
+    }
 }

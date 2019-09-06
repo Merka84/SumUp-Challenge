@@ -8,6 +8,8 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.avjindersinghsekhon.minimaltodo.model.TransactionData
+import com.google.gson.Gson
 import org.json.JSONObject
 import com.sumup.merchant.api.SumUpAPI
 import com.sumup.merchant.api.SumUpLogin
@@ -29,7 +31,7 @@ class AuthenticationRepository(private val context: Context, private val callBac
 //        params.put("response_type", "code")
 //        params.put("redirect_uri", "merka://sumup/token")
 //        params.put("grant_type", "client_credentials")
-        params.put("grant_type", "authorization_code")
+        params.put("grant_type", "password")
         params.put("username", "dev_mvvlaq7e@sumup.com")
         params.put("password", "extdev")
 //        params.put("client_secret", "adcd5ff804c15347ae77ec1f9e2ea3d8b23659a1db10f11f0f6939cf5b8457c7")
@@ -48,8 +50,6 @@ class AuthenticationRepository(private val context: Context, private val callBac
     }
 
     fun requestToken() {
-
-
         // Request a string response from the provided URL.
         val request = object : JsonObjectRequest(
                 Method.POST,
@@ -75,13 +75,27 @@ class AuthenticationRepository(private val context: Context, private val callBac
     }
 
     private fun processResponse(data: JSONObject){
-//        callBack.onSuccess("${data.get("token_type")} ${data.get("access_token")}")
         callBack.onSuccess(data.get("access_token") as String)
-
     }
 
     private fun processError(error: VolleyError){
         callBack.onError(error.message!!)
+    }
+
+    fun getReceipt(transitionCode: String) {
+        val url = "https://receipts-ng.sumup.com/v0.1/receipts/$transitionCode?mid=MVVLAQ7E"
+
+        val request = JsonObjectRequest(Request.Method.GET, url,null,
+                Response.Listener<JSONObject> {
+                    val gson = Gson()
+                    val data = it["transaction_data"] as JSONObject
+                    gson.fromJson(data.toString(), TransactionData::class.java)
+                },
+                Response.ErrorListener {
+                    Log.d("", it.message)
+                })
+
+        queue.add(request)
     }
 
 }
