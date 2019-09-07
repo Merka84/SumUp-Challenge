@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created on 2019-09-06, 14:14.
  * @author Akram Shokri
  */
+data class SumUpReceiptResponse(@SerializedName("transaction_data") val data: TransactionData)
 
 data class TransactionData(@SerializedName("transaction_code") val TransactionCode: String,
                            @SerializedName("amount") val amount: String,
