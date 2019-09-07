@@ -46,6 +46,8 @@ dependencies {
 
     implementation "com.sumup:merchant-sdk:$sumUpVersion"
     implementation "com.android.volley:volley:$volleyVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
     implementation "com.google.android.gms:play-services-analytics:$analyticsVersion"
     implementation "uk.co.chrisjenx:calligraphy:$calligraphyVersion"

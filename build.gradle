@@ -29,7 +29,9 @@ ext {
 
     sumUpVersion = '3.2.0'
     volleyVersion = '1.1.1'
-    ktxCoreVersion = '1.0.2'
+    retrofitVersion = '2.6.1'
+
+    ktxCoreVersion = '1.1.0'
     analyticsVersion = '17.0.0'
     calligraphyVersion = '2.1.0'
     spinnerVersion = '1.1.0'
@@ -40,7 +42,7 @@ ext {
     appcompatVersion = '1.0.2'
     legacySupportVersion = '1.0.0'
     junitVersion = '4.12'
-    testRunnerVersion = '1.1.1'
+    testRunnerVersion = '1.1.0'
 
 }
 
