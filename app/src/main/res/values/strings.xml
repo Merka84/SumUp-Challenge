@@ -37,4 +37,12 @@
     <string name="terminal_id">Terminal ID:</string>
     <string name="document_no">Document No. :</string>
     <string name="pay">Make Payment</string>
+    <string name="product_name">Product Name:</string>
+    <string name="product_name_hint">Taxi Ride</string>
+    <string name="price">Price:</string>
+    <string name="price_hint">1.2</string>
+    <string name="euro">€</string>
+    <string name="tip">Tipping:</string>
+    <string name="tip_hint">0.1</string>
+    <string name="total_amount">Total Amount:</string>
 </resources>
