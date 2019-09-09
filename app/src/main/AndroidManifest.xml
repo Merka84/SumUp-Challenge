@@ -58,6 +58,8 @@
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity" />
 
+        <activity android:name=".PaymentActivity"/>
+        <activity android:name=".ReceiptActivity"/>
     </application>
 
 

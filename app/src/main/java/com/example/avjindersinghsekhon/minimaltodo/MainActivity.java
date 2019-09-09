@@ -29,23 +29,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
-import com.example.avjindersinghsekhon.minimaltodo.network.ITokenCallBack;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.sumup.merchant.Models.TransactionInfo;
 import com.sumup.merchant.api.SumUpAPI;
-import com.sumup.merchant.api.SumUpLogin;
-import com.sumup.merchant.api.SumUpPayment;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerViewEmptySupport mRecyclerView;
@@ -55,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String TODOITEM = "com.example.avjindersinghsekhon.minimaltodo.MainActivity";
     private BasicListAdapter adapter;
     private static final int REQUEST_ID_TODO_ITEM = 100;
-    private static final int REQUEST_CODE_SUMMUP_PAYMENT = 2;
-    private static final int REQUEST_CODE_SUMMUP_LOGIN = 1;
     private ToDoItem mJustDeletedToDoItem;
     private int mIndexOfDeletedToDoItem;
     public static final String DATE_TIME_FORMAT_12_HOUR = "MMM d, yyyy  h:mm a";
@@ -179,8 +170,6 @@ public class MainActivity extends AppCompatActivity {
         addListeners();
         setupData();
         setAlarms();
-        checkLogin();
-
     }
 
     private void initSharedPrefStorage() {
@@ -223,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                startActivity(new Intent(MainActivity.this, PaymentActivity.class));
                 app.send(this, "Action", "FAB pressed");
                 Intent newTodo = new Intent(MainActivity.this, AddToDoActivity.class);
                 ToDoItem item = new ToDoItem("", false, null);
@@ -325,25 +315,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-        }
-
-        else  if (requestCode == REQUEST_CODE_SUMMUP_LOGIN && data != null) {
-            int resCode = data.getExtras().getInt(SumUpAPI.Response.RESULT_CODE);
-            String msg = data.getExtras().getString(SumUpAPI.Response.MESSAGE);
-            //SumUpAPI.Response.ResultCode.
-            Log.d(TAG, "result code:" + resCode);
-            Log.d(TAG, "result msg:" + msg);
-            sumUpMakePayment();
-        }
-        else  if (requestCode == REQUEST_CODE_SUMMUP_PAYMENT && data != null) {
-            int resCode = data.getExtras().getInt(SumUpAPI.Response.RESULT_CODE);
-            String transactionId = data.getExtras().getString(SumUpAPI.Param.FOREIGN_TRANSACTION_ID);
-            Log.d(TAG, "result code:"+resCode);
-            Log.d(TAG, "transactionId:"+transactionId);
-            Log.d(TAG, "msg:"+ data.getExtras().getString(SumUpAPI.Response.MESSAGE));
-            TransactionInfo transactionInfo = data.getExtras().getParcelable(SumUpAPI.Response.TX_INFO);
-            boolean isReceiptSent = data.getExtras().getBoolean(SumUpAPI.Response.RECEIPT_SENT);
-            Log.d(TAG, "isReceiptSent:"+isReceiptSent);
         }
 
     }
@@ -569,57 +540,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         mRecyclerView.removeOnScrollListener(customRecyclerScrollViewListener);
         SumUpAPI.logout();
-    }
-
-    private void sumUpMakePayment(){
-        receiptId = UUID.randomUUID().toString();
-        SumUpPayment payment = SumUpPayment.builder()
-                .total(new BigDecimal("1.12"))
-                .currency(SumUpPayment.Currency.EUR)
-                .tip(new BigDecimal("0.10"))
-                .title("Taxi Ride")
-                .receiptEmail("akram.shokri@mail.com")
-                .receiptSMS("+989051726050")
-                .foreignTransactionId(receiptId)  // can not exceed 128 chars
-                .skipSuccessScreen()
-                .build();
-
-        if(SumUpAPI.isLoggedIn()) {
-            SumUpAPI.checkout(MainActivity.this, payment, REQUEST_CODE_SUMMUP_PAYMENT);
-        } else {
-            Log.e(TAG, "not logged in ! ");
-        }
-    }
-
-    private void checkLogin() {
-        if(!SumUpAPI.isLoggedIn()) {
-            loginToSumup(null);
-//            AuthenticationRepository repository = new AuthenticationRepository(this, callBack);
-//            repository.requestToken();
-//            repository.authenticate();
-
-        }
-    }
-
-    private ITokenCallBack callBack = new ITokenCallBack() {
-        @Override
-        public void onSuccess(@NotNull String token) {
-            loginToSumup(token);
-        }
-
-        @Override
-        public void onError(@NotNull String error) {
-            Log.d(TAG , error);
-        }
-    };
-
-    private void loginToSumup(String token) {
-        String mAffiliateKey = "0fe74f65-093a-41c0-9e6b-281e8a9f8514";
-        SumUpLogin.Builder builder = SumUpLogin.builder(mAffiliateKey);
-        if(token != null) {
-            builder.accessToken(token);
-        }
-        SumUpAPI.openLoginActivity(MainActivity.this, builder.build(), REQUEST_CODE_SUMMUP_LOGIN);
     }
 
 

@@ -28,6 +28,7 @@
     <string name="snooze">Snooze</string>
     <string name="remove">Remove</string>
     <string name="todo_error">Please enter a Todo</string>
+
     <string name="proof_of_payment">Proof of Payment</string>
     <string name="no_terminal">Payment without card terminal</string>
     <string name="user_consent">I CONFIRM TO PAY THE ABOVE TOTAL AMOUNT IN ACCORDANCE WITH THE CARD PROVIDER\'S AGREEMENT.</string>
@@ -35,7 +36,7 @@
     <string name="merchant_id_value">MVVLAQ7E</string>
     <string name="transaction_id">Transaction ID:</string>
     <string name="terminal_id">Terminal ID:</string>
-    <string name="document_no">Document No. :</string>
+    <string name="receipt_no">Receipt No. :</string>
     <string name="pay">Make Payment</string>
     <string name="product_name">Product Name:</string>
     <string name="product_name_hint">Taxi Ride</string>
@@ -45,4 +46,7 @@
     <string name="tip">Tipping:</string>
     <string name="tip_hint">0.1</string>
     <string name="total_amount">Total Amount:</string>
+    <string name="fill_required_fields">Please fill product name and price fields</string>
+    <string name="card_digits">**** **** **** %s</string>
+    <string name="payment_details">Payment Detail</string>
 </resources>

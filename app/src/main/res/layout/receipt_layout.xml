@@ -1,260 +1,249 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <data>
+
+        <variable
+            name="receipt"
+            type="com.example.avjindersinghsekhon.minimaltodo.model.SumUpReceiptResponse" />
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/mdtp_white"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:scaleType="fitStart"
-            android:src="@drawable/ic_sumup_logo" />
-
-        <TextView
-            android:id="@+id/merchant_name"
-            style="@style/TextAppearance.MaterialComponents.Headline6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Android Candidate" />
-
-        <TextView
-            android:id="@+id/address"
-            style="@style/TextAppearance.MaterialComponents.Body1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:text="Address: Akram Shokri" />
-
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/accent" />
-
-        <TableLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:foregroundGravity="center">
 
-            <TableRow android:weightSum="6">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_sumup_logo" />
+
+                <TextView
+                    android:id="@+id/merchant_name"
+                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@{receipt.merchantData.merchantProfile.businessName}" />
+
+                <TextView
+                    android:id="@+id/address"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@{receipt.merchantData.merchantProfile.address.getAddressText()}" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/accent" />
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="horizontal">
+
+                    <TableRow android:paddingTop="8dp"
+                        android:weightSum="6">
+
+                        <TextView
+                            style="@style/TextAppearance"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|center_vertical"
+                            android:layout_weight="2"
+                            android:text="@string/merchant_id" />
+
+                        <TextView
+                            android:id="@+id/merchant_id"
+                            style="@style/TextAppearance"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|center_vertical"
+                            android:layout_weight="2"
+                            android:text="@string/merchant_id_value" />
+
+                        <TextView
+                            android:id="@+id/card_type"
+                            style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="2"
+                            android:text="@{receipt.transactionData.card.type}" />
+                    </TableRow>
+
+                    <TableRow
+                        android:paddingTop="8dp"
+                        android:weightSum="6">
+
+                        <TextView
+                            style="@style/TextAppearance"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|center_vertical"
+                            android:layout_weight="2"
+                            android:text="@string/transaction_id" />
+
+                        <TextView
+                            android:id="@+id/transaction_id"
+                            style="@style/TextAppearance"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|center_vertical"
+                            android:layout_weight="2"
+                            android:text="@{receipt.transactionData.transactionCode}" />
+
+                        <TextView
+                            android:id="@+id/last_4_digits"
+                            style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="2"
+                            android:text="@{receipt.transactionData.card.getCardDigits()}" />
+                    </TableRow>
+
+                    <TableRow
+                        android:paddingTop="8dp"
+                        android:weightSum="6">
+                        <TextView
+                            style="@style/TextAppearance"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|center_vertical"
+                            android:layout_weight="2"
+                            android:text="@string/receipt_no" />
+
+                        <TextView
+                            android:id="@+id/receipt_no"
+                            style="@style/TextAppearance"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|center_vertical"
+                            android:layout_weight="2"
+                            android:text="@{receipt.transactionData.receiptNo}" />
+
+                        <TextView
+                            android:id="@+id/card_holder_name"
+                            style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="2"
+                            android:text="@{receipt.transactionData.card.cardholderName}" />
+                    </TableRow>
+
+
+                </TableLayout>
+
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/proof_of_payment"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/date_time"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@{receipt.transactionData.getDateTimeText()}" />
+
+                <TextView
+                    android:id="@+id/product_name"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@{receipt.transactionData.products.get(0).name}" />
+
+                <TextView
+                    android:id="@+id/amount"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@{receipt.transactionData.products.get(0).getPriceText()}" />
+
+                <TextView
+                    android:id="@+id/tipping"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@{receipt.transactionData.getTippingText()}" />
 
                 <TextView
                     style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="2"
-                    android:text="@string/merchant_id" />
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@{receipt.transactionData.getTotalAmountText()}" />
 
                 <TextView
-                    android:id="@+id/merchant_id"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:layout_width="0dp"
+                    android:id="@+id/total_amount"
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="2.5"
-                    android:text="@string/merchant_id_value" />
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/no_terminal" />
 
                 <TextView
-                    android:id="@+id/card_type"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
+                    style="@style/TextAppearance.MaterialComponents.Button"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="1.5"
-                    android:text="MasterCard" />
-            </TableRow>
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingBottom="16dp"
+                    android:text="@string/user_consent" />
+            </LinearLayout>
 
-            <TableRow android:weightSum="6">
-
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="2"
-                    android:text="@string/transaction_id" />
-
-                <TextView
-                    android:id="@+id/transaction_id"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="2"
-                    android:text="TC263PYMYA" />
-
-                <TextView
-                    android:id="@+id/last_4_digits"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="2"
-                    android:text="**** **** **** 1234" />
-            </TableRow>
-
-            <TableRow android:weightSum="6">
-
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="2"
-                    android:text="@string/terminal_id" />
-
-                <TextView
-                    android:id="@+id/terminal_id"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="2.5"
-                    android:text="00000001" />
-
-                <TextView
-                    android:id="@+id/card_holder_name"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="1.5"
-                    android:text="Akram Shokri" />
-            </TableRow>
-
-            <TableRow android:weightSum="6">
-
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="2"
-                    android:text="@string/document_no" />
-
-                <TextView
-                    android:id="@+id/document_no"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="2.5"
-                    android:text="00000001" />
-
-                <TextView
-                    android:id="@+id/card_input_type"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="1.5"
-                    android:text="Manual Input" />
-            </TableRow>
-        </TableLayout>
-
-        <TextView
-            style="@style/TextAppearance.MaterialComponents.Headline6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/proof_of_payment" />
-
-        <TextView
-            android:id="@+id/date_time"
-            style="@style/TextAppearance.MaterialComponents.Body1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:text="Date and time" />
-
-        <TextView
-            android:id="@+id/product_name"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="Taxi" />
-
-        <TextView
-            android:id="@+id/amount"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
-            android:text="Amount: 1 Euro" />
-
-        <TextView
-            android:id="@+id/tipping"
-            style="@style/TextAppearance.MaterialComponents.Subtitle2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
-            android:text="Tipping: 1 Euro" />
-
-        <TextView
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
-            android:text="Total Amount: 2 Euro" />
-
-        <TextView
-            android:id="@+id/total_amount"
-            style="@style/TextAppearance.MaterialComponents.Body2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/no_terminal" />
-
-        <TextView
-            style="@style/TextAppearance.MaterialComponents.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/user_consent" />
-    </LinearLayout>
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center" />
+        </FrameLayout>
+    </androidx.core.widget.NestedScrollView>
 </layout>
