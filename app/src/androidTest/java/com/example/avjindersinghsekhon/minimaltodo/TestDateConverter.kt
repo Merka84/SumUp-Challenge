@@ -1,11 +1,14 @@
 package com.example.avjindersinghsekhon.minimaltodo
 
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import com.example.avjindersinghsekhon.minimaltodo.model.convertToLocalDateTime
 import com.example.avjindersinghsekhon.minimaltodo.network.AuthenticationRepository
 import com.example.avjindersinghsekhon.minimaltodo.network.ITokenCallBack
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created on 2019-09-05, 14:21.
@@ -13,28 +16,14 @@ import org.junit.runners.JUnit4
  */
 
 @RunWith(JUnit4::class)
-class TestAuthenticationRepository {
-
-    private val callback = object : ITokenCallBack {
-        override fun onSuccess(data: String) {
-            assert(data.length >= 32)
-        }
-
-        override fun onError(error: String) {
-            assert(error.isNotEmpty())
-        }
-    }
-
-    private val repository = AuthenticationRepository(getInstrumentation().context, callback)
-
+class TestDateConverter {
 
     @Test
-    fun testAuthentication(){
-        repository.requestToken()
-    }
+    fun testDateConversion(){
+        val dateStr = "2019-09-09T16:24:41.824Z"
+        val result = SimpleDateFormat().convertToLocalDateTime(dateStr)
 
-    @Test
-    fun testReceipt(){
-        repository.getReceipt("TC263PYMYA")
+        assert(result.startsWith("09/09/2019"))
+        assert(result.contains("8:54"))
     }
 }
