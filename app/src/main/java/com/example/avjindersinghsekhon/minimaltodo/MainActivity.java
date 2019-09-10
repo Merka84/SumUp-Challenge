@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,9 +43,16 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerViewEmptySupport mRecyclerView;
-    private FloatingActionButton mAddToDoItemFAB;
+    private FloatingActionButton mMainFAB;
+    private FloatingActionButton todoFAB;
+    private FloatingActionButton paymentFAB;
+    private LinearLayout mainFABLayout;
+    private LinearLayout todoFABLayout;
+    private LinearLayout paymentFABLayout;
+
     private ArrayList<ToDoItem> mToDoItemsArrayList;
     private CoordinatorLayout mCoordLayout;
+    private FrameLayout fabsLayout;
     public static final String TODOITEM = "com.example.avjindersinghsekhon.minimaltodo.MainActivity";
     private BasicListAdapter adapter;
     private static final int REQUEST_ID_TODO_ITEM = 100;
@@ -71,9 +79,7 @@ public class MainActivity extends AppCompatActivity {
             "Get car washed",
             "Get my dry cleaning"
     };
-
-    public static final String TAG = "SumUp-test";
-    private String receiptId;
+    private boolean fabExpanded = false;
 
 
     public static ArrayList<ToDoItem> getLocallyStoredData(StoreRetrieveData storeRetrieveData){
@@ -181,7 +187,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViews() {
         mCoordLayout = findViewById(R.id.myCoordinatorLayout);
-        mAddToDoItemFAB = findViewById(R.id.addToDoItemFAB);
+        fabsLayout = findViewById(R.id.fabs_layout);
+        mMainFAB= fabsLayout.findViewById(R.id.fab_main);
+        todoFAB = fabsLayout.findViewById(R.id.fab_todo);
+        paymentFAB = fabsLayout.findViewById(R.id.fab_payment);
+        mainFABLayout = fabsLayout.findViewById(R.id.main_fab_layout);
+        todoFABLayout = fabsLayout.findViewById(R.id.todo_fab_layout);
+        paymentFABLayout = fabsLayout.findViewById(R.id.payment_fab_layout);
+
+        //mMainFAB = findViewById(R.id.addToDoItemFAB);
 
         mRecyclerView = findViewById(R.id.toDoRecyclerView);
         if(theme.equals(LIGHTTHEME)){
@@ -207,12 +221,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addListeners(){
-        mAddToDoItemFAB.setOnClickListener(new View.OnClickListener() {
+        mMainFAB.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(MainActivity.this, PaymentActivity.class));
+                if (fabExpanded == true){
+                    closeSubMenusFab();
+                } else {
+                    openSubMenusFab();
+                }
+            }
+        });
+
+        todoFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 app.send(this, "Action", "FAB pressed");
                 Intent newTodo = new Intent(MainActivity.this, AddToDoActivity.class);
                 ToDoItem item = new ToDoItem("", false, null);
@@ -220,22 +244,31 @@ public class MainActivity extends AppCompatActivity {
                 item.setTodoColor(color);
                 //noinspection ResourceType
                 newTodo.putExtra(TODOITEM, item);
+                closeSubMenusFab();
                 startActivityForResult(newTodo, REQUEST_ID_TODO_ITEM);
+            }
+        });
+
+        paymentFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeSubMenusFab();
+                startActivity(new Intent(MainActivity.this, PaymentActivity.class));
             }
         });
 
         customRecyclerScrollViewListener = new CustomRecyclerScrollViewListener() {
             @Override
             public void show() {
-                mAddToDoItemFAB.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                fabsLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
             }
 
             @Override
             public void hide() {
 
-                CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)mAddToDoItemFAB.getLayoutParams();
+                CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) fabsLayout.getLayoutParams();
                 int fabMargin = lp.bottomMargin;
-                mAddToDoItemFAB.animate().translationY(mAddToDoItemFAB.getHeight()+fabMargin).setInterpolator(new AccelerateInterpolator(2.0f)).start();
+                fabsLayout.animate().translationY(fabsLayout.getHeight()+fabMargin).setInterpolator(new AccelerateInterpolator(2.0f)).start();
             }
         };
     }
@@ -541,6 +574,25 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.removeOnScrollListener(customRecyclerScrollViewListener);
         SumUpAPI.logout();
     }
+
+
+    //closes FAB submenus
+    private void closeSubMenusFab(){
+        todoFABLayout.setVisibility(View.INVISIBLE);
+        paymentFABLayout.setVisibility(View.INVISIBLE);
+        mMainFAB.setImageResource(R.drawable.ic_add);
+        fabExpanded = false;
+    }
+
+    //Opens FAB submenus
+    private void openSubMenusFab(){
+        todoFABLayout.setVisibility(View.VISIBLE);
+        paymentFABLayout.setVisibility(View.VISIBLE);
+        //Change settings icon to 'X' icon
+        mMainFAB.setImageResource(R.drawable.ic_close);
+        fabExpanded = true;
+    }
+
 
 
 }

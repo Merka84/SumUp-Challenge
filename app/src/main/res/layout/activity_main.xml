@@ -51,8 +51,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
+        <include
+            android:id="@+id/fabs_layout"
+            layout="@layout/two_fab_layout"
+            app:layout_anchor="@id/toDoRecyclerView"
+            app:layout_anchorGravity="bottom|end" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+       <!-- <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:src="@drawable/ic_add_white_24dp"
             android:id="@+id/addToDoItemFAB"
             android:layout_width="wrap_content"
@@ -61,7 +66,7 @@
             app:layout_anchor="@id/toDoRecyclerView"
             app:layout_anchorGravity="bottom|end"
             app:layout_behavior="com.example.avjindersinghsekhon.minimaltodo.ScrollingFABBehaviour"
-            />
+            />-->
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

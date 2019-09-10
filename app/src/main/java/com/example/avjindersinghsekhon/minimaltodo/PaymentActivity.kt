@@ -29,6 +29,8 @@ class PaymentActivity : AppCompatActivity() {
     private val REQUEST_CODE_SUMMUP_PAYMENT = 2
     private val REQUEST_CODE_SUMMUP_LOGIN = 1
     private val mAffiliateKey = "0fe74f65-093a-41c0-9e6b-281e8a9f8514"
+    val TAG = "SumUp-test"
+
     companion object {
         val TRANSACTION_CODE = "sumUp_transaction_code"
         val MERCHANT_CODE = "sumUp_merchant_code"
@@ -123,7 +125,7 @@ class PaymentActivity : AppCompatActivity() {
         if (SumUpAPI.isLoggedIn()) {
             SumUpAPI.checkout(this@PaymentActivity, payment, REQUEST_CODE_SUMMUP_PAYMENT)
         } else {
-            Log.e(MainActivity.TAG, "not logged in ! ")
+            Log.e(TAG, "not logged in ! ")
         }
     }
 
@@ -132,8 +134,8 @@ class PaymentActivity : AppCompatActivity() {
             val resCode = data.extras!!.getInt(SumUpAPI.Response.RESULT_CODE)
             val msg = data.extras!!.getString(SumUpAPI.Response.MESSAGE)
 
-            Log.d(MainActivity.TAG, "result code:$resCode")
-            Log.d(MainActivity.TAG, "result msg:" + msg!!)
+            Log.d(TAG, "result code:$resCode")
+            Log.d(TAG, "result msg:" + msg!!)
             if(resCode == SUCCESSFUL){
                 sumUpCreatePayment()
             } else{
