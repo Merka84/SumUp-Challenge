@@ -163,5 +163,7 @@ class PaymentActivity : AppCompatActivity() {
 
             }
         }
+
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }
