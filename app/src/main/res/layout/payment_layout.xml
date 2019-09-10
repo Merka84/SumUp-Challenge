@@ -134,7 +134,7 @@
             android:layout_marginEnd="16dp"
             android:layout_weight="0"
             android:text="@string/pay"
-            app:backgroundTint="?attr/colorAccent"
+            app:backgroundTint="?attr/colorPrimary"
             app:cornerRadius="10dp" />
 
     </LinearLayout>

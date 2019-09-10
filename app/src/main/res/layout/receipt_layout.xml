@@ -8,8 +8,7 @@
             type="com.example.avjindersinghsekhon.minimaltodo.model.SumUpReceiptResponse" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -33,11 +32,21 @@
                     android:src="@drawable/ic_sumup_logo" />
 
                 <TextView
-                    android:id="@+id/merchant_name"
                     style="@style/TextAppearance.MaterialComponents.Headline6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:text="@string/transaction_receipt" />
+
+                <TextView
+                    android:id="@+id/merchant_name"
+                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:textSize="16sp"
                     android:text="@{receipt.merchantData.merchantProfile.businessName}" />
 
                 <TextView
@@ -56,7 +65,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@color/accent" />
+                    android:background="?attr/colorPrimary" />
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -65,7 +74,8 @@
                     android:layout_marginEnd="16dp"
                     android:orientation="horizontal">
 
-                    <TableRow android:paddingTop="8dp"
+                    <TableRow
+                        android:paddingTop="8dp"
                         android:weightSum="6">
 
                         <TextView
@@ -129,6 +139,7 @@
                     <TableRow
                         android:paddingTop="8dp"
                         android:weightSum="6">
+
                         <TextView
                             style="@style/TextAppearance"
                             android:layout_width="0dp"
@@ -167,6 +178,7 @@
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="16dp"
                     android:text="@string/proof_of_payment"
+                    android:textColor="?attr/colorPrimary"
                     android:textSize="18sp" />
 
                 <TextView
@@ -241,16 +253,17 @@
                 <Button
                     android:id="@+id/back_btn"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="24dp"
                     android:layout_height="60dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="16dp"
-                    app:backgroundTint="?attr/colorAccent"
-                    android:text="@string/back"/>
+                    android:text="@string/back"
+                    app:backgroundTint="?attr/colorPrimary" />
             </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/progress_bar"
+                android:indeterminate="true"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center" />
