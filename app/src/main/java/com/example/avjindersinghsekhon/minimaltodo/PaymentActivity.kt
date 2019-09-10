@@ -112,7 +112,7 @@ class PaymentActivity : AppCompatActivity() {
 
     private fun sumUpCreatePayment() {
         val payment = SumUpPayment.builder()
-                .total(BigDecimal.valueOf(readTextViewDoubleValue(binding.totalAmount)))
+                .total(BigDecimal.valueOf(readTextViewDoubleValue(binding.price)))
                 .currency(SumUpPayment.Currency.EUR)
                 .tip(BigDecimal.valueOf(readTextViewDoubleValue(binding.tipping)))
                 .title(binding.productTitle.text.toString())
