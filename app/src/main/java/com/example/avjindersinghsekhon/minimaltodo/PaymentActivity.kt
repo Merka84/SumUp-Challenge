@@ -55,11 +55,12 @@ class PaymentActivity : AppCompatActivity() {
 
     private fun setListener() {
         binding.paymentBtn.setOnClickListener {
-            if (validateInputs()) {
+            val msg = validateInputs()
+            if (msg.isBlank()) {
                 binding.paymentBtn.isActivated = false
                 checkLogin()
             } else {
-                Snackbar.make(binding.root, R.string.fill_required_fields, Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG).show()
             }
         }
 
@@ -67,12 +68,17 @@ class PaymentActivity : AppCompatActivity() {
         addTextChangeListener(binding.tipping)
     }
 
-    private fun validateInputs(): Boolean {
+    private fun validateInputs(): String {
         if (binding.price.text.toString().isBlank()
                 || binding.productTitle.text.toString().isBlank()) {
-            return false
+            return return getString(R.string.fill_required_fields)
         }
-        return true
+
+        if(!binding.price.text.toString().isNullOrBlank() &&
+                readTextViewDoubleValue(binding.price) < 1.0 ){
+            return getString(R.string.invalid_price_value)
+        }
+        return ""
     }
 
     private fun addTextChangeListener(input: EditText){

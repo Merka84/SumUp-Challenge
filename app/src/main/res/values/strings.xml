@@ -45,11 +45,12 @@
     <string name="tip">Tipping:</string>
     <string name="tip_hint">0.1</string>
     <string name="total_amount">Total Amount:</string>
-    <string name="fill_required_fields">Please fill product name and price fields</string>
+    <string name="fill_required_fields">Please fill product name and price fields!</string>
     <string name="card_digits">**** **** **** %s</string>
     <string name="payment_details">Payment Details</string>
     <string name="payment">SumUp Payment</string>
     <string name="add_todo">Add ToDo</string>
     <string name="back">Back</string>
     <string name="transaction_receipt">Receipt of Transaction</string>
+    <string name="invalid_price_value">Price must be at least 1 Euro!</string>
 </resources>
