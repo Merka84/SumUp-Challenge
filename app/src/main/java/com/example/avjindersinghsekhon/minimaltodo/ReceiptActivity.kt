@@ -42,7 +42,7 @@ class ReceiptActivity  : AppCompatActivity(){
     private fun prepareData() {
         binding.progressBar.visibility = View.VISIBLE
         val transactionCode = intent.getStringExtra(PaymentActivity.TRANSACTION_CODE)
-        val merchantCode = intent.getStringExtra(PaymentActivity.TRANSACTION_CODE)
+        val merchantCode = intent.getStringExtra(PaymentActivity.MERCHANT_CODE)
         repository.getReceipt(transactionCode, merchantCode, callBack)
     }
 
