@@ -39,7 +39,7 @@ ext {
     textDrawableVersion = '1.0.1'
     recyclerviewVersion = '1.0.0'
     materialVersion = '1.0.0'
-    appcompatVersion = '1.0.2'
+    appcompatVersion = '1.1.0'
     legacySupportVersion = '1.0.0'
     junitVersion = '4.12'
     testRunnerVersion = '1.1.0'
