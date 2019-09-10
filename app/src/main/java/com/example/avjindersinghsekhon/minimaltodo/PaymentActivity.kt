@@ -3,7 +3,11 @@ package com.example.avjindersinghsekhon.minimaltodo
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.avjindersinghsekhon.minimaltodo.databinding.PaymentLayoutBinding
@@ -11,7 +15,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.sumup.merchant.Models.TransactionInfo
 import com.sumup.merchant.api.SumUpAPI
 import com.sumup.merchant.api.SumUpAPI.Response.ResultCode.SUCCESSFUL
-import com.sumup.merchant.api.SumUpAPI.Response.TX_CODE
 import com.sumup.merchant.api.SumUpLogin
 import com.sumup.merchant.api.SumUpPayment
 import java.math.BigDecimal
@@ -26,15 +29,17 @@ class PaymentActivity : AppCompatActivity() {
     private val REQUEST_CODE_SUMMUP_PAYMENT = 2
     private val REQUEST_CODE_SUMMUP_LOGIN = 1
     private val mAffiliateKey = "0fe74f65-093a-41c0-9e6b-281e8a9f8514"
-
+    companion object {
+        val TRANSACTION_CODE = "sumUp_transaction_code"
+        val MERCHANT_CODE = "sumUp_merchant_code"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         initTheme()
 
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.payment_layout)
 
-        checkLogin()
-        setClickListener()
+        setListener()
     }
 
     private fun initTheme() {
@@ -46,24 +51,54 @@ class PaymentActivity : AppCompatActivity() {
         }
     }
 
-    private fun setClickListener() {
+    private fun setListener() {
         binding.paymentBtn.setOnClickListener {
             if (validateInputs()) {
                 binding.paymentBtn.isActivated = false
-
-                sumUpCreatePayment()
-            } else{
+                checkLogin()
+            } else {
                 Snackbar.make(binding.root, R.string.fill_required_fields, Snackbar.LENGTH_LONG).show()
             }
         }
+
+        addTextChangeListener(binding.price)
+        addTextChangeListener(binding.tipping)
     }
 
     private fun validateInputs(): Boolean {
-        if(binding.price.text.toString().isBlank()
+        if (binding.price.text.toString().isBlank()
                 || binding.productTitle.text.toString().isBlank()) {
             return false
         }
         return true
+    }
+
+    private fun addTextChangeListener(input: EditText){
+        input.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                var total = readTextViewDoubleValue(binding.price)
+                total += readTextViewDoubleValue(binding.tipping)
+                binding.totalAmount.text = total.toString()
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+
+        })
+    }
+
+    private fun readTextViewDoubleValue(input: TextView): Double {
+        var value = input.text.toString()
+        if(!value.isNullOrBlank()){
+            return value.toDouble()
+        }
+        return 0.0
     }
 
     private fun checkLogin() {
@@ -74,13 +109,10 @@ class PaymentActivity : AppCompatActivity() {
     }
 
     private fun sumUpCreatePayment() {
-        var total = binding.price.text.toString().toDouble()
-        binding.totalAmount.text = total.toString()
-        total += binding.tipping.text.toString().toDouble() * total
         val payment = SumUpPayment.builder()
-                .total(BigDecimal.valueOf(total))
+                .total(BigDecimal.valueOf(readTextViewDoubleValue(binding.totalAmount)))
                 .currency(SumUpPayment.Currency.EUR)
-                .tip(BigDecimal.valueOf(binding.tipping.text.toString().toDouble()))
+                .tip(BigDecimal.valueOf(readTextViewDoubleValue(binding.tipping)))
                 .title(binding.productTitle.text.toString())
                 .receiptEmail("akram.shokri@mail.com")
                 .receiptSMS("+989051726050")
@@ -99,24 +131,28 @@ class PaymentActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_SUMMUP_LOGIN && data != null) {
             val resCode = data.extras!!.getInt(SumUpAPI.Response.RESULT_CODE)
             val msg = data.extras!!.getString(SumUpAPI.Response.MESSAGE)
-            //SumUpAPI.Response.ResultCode.
+
             Log.d(MainActivity.TAG, "result code:$resCode")
             Log.d(MainActivity.TAG, "result msg:" + msg!!)
+            if(resCode == SUCCESSFUL){
+                sumUpCreatePayment()
+            } else{
+                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG).show()
+            }
 
         } else if (requestCode == REQUEST_CODE_SUMMUP_PAYMENT && data != null) {
             val resCode = data.extras!!.getInt(SumUpAPI.Response.RESULT_CODE)
-            val transactionId = data.extras!!.getString(SumUpAPI.Param.FOREIGN_TRANSACTION_ID)
-            Log.d(MainActivity.TAG, "result code:$resCode")
-            Log.d(MainActivity.TAG, "transactionId:" + transactionId!!)
-            Log.d(MainActivity.TAG, "msg:" + data.extras!!.getString(SumUpAPI.Response.MESSAGE)!!)
             val transactionInfo = data.extras!!.getParcelable<TransactionInfo>(SumUpAPI.Response.TX_INFO)
-            val isReceiptSent = data.extras!!.getBoolean(SumUpAPI.Response.RECEIPT_SENT)
-            if(resCode == SUCCESSFUL) {
+            if (resCode == SUCCESSFUL) {
                 val intent = Intent(this, ReceiptActivity::class.java)
-                intent.putExtra(TX_CODE, transactionInfo.transactionCode)
+                intent.putExtra(TRANSACTION_CODE, transactionInfo.transactionCode)
+                intent.putExtra(MERCHANT_CODE, transactionInfo.merchantCode)
                 startActivity(intent)
+            } else {
+                val msg = data.extras!!.getString(SumUpAPI.Response.MESSAGE)
+                Snackbar.make(binding.root, msg!!, Snackbar.LENGTH_LONG).show()
+
             }
-            Log.d(MainActivity.TAG, "isReceiptSent:$isReceiptSent")
         }
     }
 }

@@ -20,7 +20,6 @@ import retrofit2.Response
  */
 class ReceiptActivity  : AppCompatActivity(){
     private lateinit var binding: ReceiptLayoutBinding
-    private lateinit var transactionCode : String
     private val repository = APICallRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,8 +41,9 @@ class ReceiptActivity  : AppCompatActivity(){
 
     private fun prepareData() {
         binding.progressBar.visibility = View.VISIBLE
-        transactionCode = intent.getStringExtra(SumUpAPI.Response.TX_CODE)
-        repository.getReceipt(transactionCode, callBack)
+        val transactionCode = intent.getStringExtra(PaymentActivity.TRANSACTION_CODE)
+        val merchantCode = intent.getStringExtra(PaymentActivity.TRANSACTION_CODE)
+        repository.getReceipt(transactionCode, merchantCode, callBack)
     }
 
     private val callBack = object : Callback<SumUpReceiptResponse> {

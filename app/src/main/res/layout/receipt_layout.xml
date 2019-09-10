@@ -83,7 +83,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="start|center_vertical"
                             android:layout_weight="2"
-                            android:text="@string/merchant_id_value" />
+                            android:text="@{receipt.merchantData.merchantProfile.merchantCode}" />
 
                         <TextView
                             android:id="@+id/card_type"

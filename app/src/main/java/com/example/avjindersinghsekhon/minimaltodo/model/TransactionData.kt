@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 data class SumUpReceiptResponse(@SerializedName("transaction_data") val transactionData: TransactionData,
                                 @SerializedName("merchant_data") val merchantData: MerchantData)
 
-data class TransactionData(@SerializedName("transaction_code") val TransactionCode: String,
+data class TransactionData(@SerializedName("transaction_code") val transactionCode: String,
                            @SerializedName("amount") val amount: String,
                            @SerializedName("vat_amount") val vatAmount: String,
                            @SerializedName("tip_amount") val tipAmount: String,
@@ -48,7 +48,7 @@ data class Card(@SerializedName("last_4_digits") val last4Digits: String,
 
 data class Product(@SerializedName("name") val name: String,
                    @SerializedName("price") val price: String,
-                   @SerializedName("quantity") val quantity: String,
+                   @SerializedName("quantity") val quantity: Int,
                    @SerializedName("total_price") val totalPrice: String){
     fun getPriceText() : String{
         return "Amount: $price Euro"
@@ -58,6 +58,7 @@ data class Product(@SerializedName("name") val name: String,
 data class MerchantData(@SerializedName("merchant_profile") val merchantProfile: MerchantProfile)
 
 data class MerchantProfile(@SerializedName("business_name") val businessName: String,
+                           @SerializedName("merchant_code") val merchantCode: String,
                            @SerializedName("address") val address: Address)
 
 data class Address(@SerializedName("address_line1") val addressLine1: String,

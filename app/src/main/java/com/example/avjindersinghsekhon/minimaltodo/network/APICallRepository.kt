@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 
 class APICallRepository {
 
-    fun getReceipt(transactionCode: String, callBack: Callback<SumUpReceiptResponse>) {
+    fun getReceipt(transactionCode: String, merchantCode: String, callBack: Callback<SumUpReceiptResponse>) {
         val client = OkHttpClient.Builder()
                 .connectTimeout(100, TimeUnit.SECONDS)
                 .readTimeout(100, TimeUnit.SECONDS).build()
@@ -22,7 +22,7 @@ class APICallRepository {
 
          retrofit
                 .create(APIRequest::class.java)
-                .receipt(transactionCode)
+                .receipt(transactionCode, merchantCode)
                 .enqueue(callBack)
 
     }
