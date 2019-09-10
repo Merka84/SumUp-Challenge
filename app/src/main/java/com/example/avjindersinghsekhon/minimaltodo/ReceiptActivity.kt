@@ -26,7 +26,7 @@ class ReceiptActivity  : AppCompatActivity(){
         initTheme()
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.receipt_layout)
-
+        addClickListener()
         prepareData()
     }
 
@@ -36,6 +36,12 @@ class ReceiptActivity  : AppCompatActivity(){
             setTheme(R.style.CustomStyle_DarkTheme)
         } else {
             setTheme(R.style.CustomStyle_LightTheme)
+        }
+    }
+
+    private fun addClickListener(){
+        binding.backBtn.setOnClickListener {
+            finish()
         }
     }
 

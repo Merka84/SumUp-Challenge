@@ -50,4 +50,5 @@
     <string name="payment_details">Payment Detail</string>
     <string name="payment">Make Payment</string>
     <string name="add_todo">Add ToDo</string>
+    <string name="back">Back</string>
 </resources>

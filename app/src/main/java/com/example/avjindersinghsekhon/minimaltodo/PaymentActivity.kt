@@ -150,6 +150,7 @@ class PaymentActivity : AppCompatActivity() {
                 intent.putExtra(TRANSACTION_CODE, transactionInfo.transactionCode)
                 intent.putExtra(MERCHANT_CODE, transactionInfo.merchantCode)
                 startActivity(intent)
+                finish()
             } else {
                 val msg = data.extras!!.getString(SumUpAPI.Response.MESSAGE)
                 Snackbar.make(binding.root, msg!!, Snackbar.LENGTH_LONG).show()
