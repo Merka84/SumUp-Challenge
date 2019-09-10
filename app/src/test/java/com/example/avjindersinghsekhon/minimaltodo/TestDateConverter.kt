@@ -18,6 +18,8 @@ class TestDateConverter {
         val result = SimpleDateFormat().convertToLocalDateTime(dateStr)
 
         assert(result.startsWith("09/09/2019"))
-        assert(result.contains("8:54"))
+
+        //NOTE: below assertion is valid for GMT+4.5 timezone
+        assert(result.toLowerCase().contains("8:54 pm"))
     }
 }
