@@ -28,7 +28,6 @@ ext {
     buildToolsVersion = '28.0.3'
 
     sumUpVersion = '3.2.0'
-    volleyVersion = '1.1.1'
     retrofitVersion = '2.6.1'
 
     ktxCoreVersion = '1.1.0'
