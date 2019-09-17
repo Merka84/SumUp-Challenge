@@ -28,7 +28,7 @@ class PaymentActivity : AppCompatActivity() {
     private lateinit var binding: PaymentLayoutBinding
     private val REQUEST_CODE_SUMMUP_PAYMENT = 2
     private val REQUEST_CODE_SUMMUP_LOGIN = 1
-    private val mAffiliateKey = BuildConfig.sumupAffiliateKey
+    private val mAffiliateKey = "0fe74f65-093a-41c0-9e6b-281e8a9f8514"//BuildConfig.sumupAffiliateKey
     val TAG = "SumUp-merka"
 
     companion object {
